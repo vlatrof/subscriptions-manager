@@ -4,5 +4,5 @@ import com.vlatrof.subscriptionsmanager.domain.models.Subscription
 
 interface UpdateSubscriptionUseCase {
 
-    operator fun invoke(subscription: Subscription)
+    suspend operator fun invoke(subscription: Subscription)
 }

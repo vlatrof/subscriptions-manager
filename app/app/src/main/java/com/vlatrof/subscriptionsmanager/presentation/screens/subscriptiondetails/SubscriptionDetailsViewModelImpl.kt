@@ -61,7 +61,7 @@ class SubscriptionDetailsViewModelImpl(
 
     override fun loadSubscriptionById(id: Int) {
         viewModelScope.launch(mainDispatcher) {
-            subscriptionLiveData.value = getSubscriptionByIdUseCase(id).await()
+            subscriptionLiveData.value = getSubscriptionByIdUseCase(id)
         }
     }
 
@@ -80,18 +80,18 @@ class SubscriptionDetailsViewModelImpl(
     override fun handleNewNameInputValue(newValue: String) {
         nameTitleLiveData.value = newValue
         nameInputState.value = validateNameValue(newValue)
-        buttonSaveState.value = validateSaveButtonState()
+        updateSaveButtonState()
     }
 
     override fun handleNewCostInputValue(newValue: String) {
         costInputState.value = validateCostValue(newValue)
-        buttonSaveState.value = validateSaveButtonState()
+        updateSaveButtonState()
     }
 
     override fun handleNewCurrencyValue(newValue: String) {
         currencyInputValue = newValue
         currencyInputState.value = validateCurrencyValue(newValue)
-        buttonSaveState.value = validateSaveButtonState()
+        updateSaveButtonState()
     }
 
     override fun handleNewStartDateValue(newValue: Long) {
@@ -150,8 +150,9 @@ class SubscriptionDetailsViewModelImpl(
         return InputState.Correct
     }
 
-    private fun validateSaveButtonState(): Boolean {
-        return nameInputState.value == InputState.Correct &&
+    private fun updateSaveButtonState() {
+        buttonSaveState.value =
+            nameInputState.value == InputState.Correct &&
             costInputState.value == InputState.Correct &&
             currencyInputState.value == InputState.Correct
     }

@@ -18,23 +18,23 @@ class SubscriptionsLocalDataSource(private val subscriptionsDao: SubscriptionsDa
             }
         }
 
-    fun getSubscriptionById(id: Int): DataSubscription {
+    suspend fun getSubscriptionById(id: Int): DataSubscription {
         return DataSubscription(subscriptionsDao.getById(id))
     }
 
-    fun insertSubscription(subscription: DataSubscription) {
+    suspend fun insertSubscription(subscription: DataSubscription) {
         subscriptionsDao.insert(subscription.toSubscriptionEntity())
     }
 
-    fun deleteAllSubscriptions() {
+    suspend fun deleteAllSubscriptions() {
         subscriptionsDao.deleteAll()
     }
 
-    fun deleteSubscriptionById(id: Int) {
+    suspend fun deleteSubscriptionById(id: Int) {
         subscriptionsDao.deleteById(id)
     }
 
-    fun updateSubscription(subscription: DataSubscription) {
+    suspend fun updateSubscription(subscription: DataSubscription) {
         subscriptionsDao.update(subscription.toSubscriptionEntity())
     }
 }

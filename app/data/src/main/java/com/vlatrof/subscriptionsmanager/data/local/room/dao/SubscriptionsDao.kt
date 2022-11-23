@@ -12,23 +12,23 @@ import kotlinx.coroutines.flow.Flow
 interface SubscriptionsDao {
 
     @Query("SELECT * FROM subscriptions")
-    fun getAll(): List<SubscriptionEntity>
+    suspend fun getAll(): List<SubscriptionEntity>
 
     @Query("SELECT * FROM subscriptions")
     fun getAllFlow(): Flow<List<SubscriptionEntity>>
 
     @Query("SELECT * FROM subscriptions WHERE id=:id ")
-    fun getById(id: Int): SubscriptionEntity
+    suspend fun getById(id: Int): SubscriptionEntity
 
     @Query("DELETE FROM subscriptions")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(subscription: SubscriptionEntity)
+    suspend fun insert(subscription: SubscriptionEntity)
 
     @Query("DELETE FROM subscriptions WHERE id = :id")
-    fun deleteById(id: Int)
+    suspend fun deleteById(id: Int)
 
     @Update
-    fun update(subscription: SubscriptionEntity)
+    suspend fun update(subscription: SubscriptionEntity)
 }

@@ -8,7 +8,7 @@ class DeleteSubscriptionByIdUseCaseImpl(
 
 ) : DeleteSubscriptionByIdUseCase {
 
-    override operator fun invoke(id: Int) {
+    override suspend operator fun invoke(id: Int) {
         subscriptionsRepository.deleteSubscriptionById(id)
     }
 }

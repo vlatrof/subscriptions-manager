@@ -9,7 +9,7 @@ class UpdateSubscriptionUseCaseImpl(
 
 ) : UpdateSubscriptionUseCase {
 
-    override fun invoke(subscription: Subscription) {
+    override suspend fun invoke(subscription: Subscription) {
         subscriptionsRepository.updateSubscription(subscription)
     }
 }
