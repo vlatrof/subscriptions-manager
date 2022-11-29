@@ -3,7 +3,7 @@ package com.vlatrof.subscriptionsmanager.di
 import com.vlatrof.subscriptionsmanager.presentation.screens.newsubscription.NewSubscriptionFragment
 import com.vlatrof.subscriptionsmanager.presentation.screens.options.OptionsFragment
 import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.SubscriptionDetailsFragment
-import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptionslist.SubscriptionsFragment
+import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.SubscriptionsFragment
 import dagger.Component
 
 @Component(modules = [AppModule::class, DomainModule::class, DataModule::class])

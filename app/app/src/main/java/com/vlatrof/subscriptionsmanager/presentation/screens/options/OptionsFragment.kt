@@ -14,6 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.vlatrof.subscriptionsmanager.R
 import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.databinding.FragmentOptionsBinding
+import com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel.OptionsViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel.OptionsViewModelFactory
+import com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel.OptionsViewModelImpl
 import com.vlatrof.subscriptionsmanager.utils.getFirstKey
 import javax.inject.Inject
 
@@ -47,8 +50,10 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
     }
 
     private fun createOptionsViewModel() {
-        optionsViewModel =
-            ViewModelProvider(this, optionsViewModelFactory)[OptionsViewModel::class.java]
+        optionsViewModel = ViewModelProvider(
+            this,
+            optionsViewModelFactory
+        )[OptionsViewModel::class.java]
     }
 
     private fun setupExportSubscriptionsButton() {
@@ -103,7 +108,9 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         )
 
         binding.rgOptionsNightMode.setOnCheckedChangeListener { _, checkedId ->
-            optionsViewModel.applyNightMode(radioGroupNightModeMap.getFirstKey(checkedId)!!)
+            optionsViewModel.applyNightMode(
+                mode = radioGroupNightModeMap.getFirstKey(checkedId)!!
+            )
         }
     }
 }

@@ -1,17 +1,16 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptionslist
+package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
 import com.vlatrof.subscriptionsmanager.domain.usecases.getallflow.GetAllSubscriptionsFlowUseCase
 
-class SubscriptionsViewModel(
+class SubscriptionsViewModelImpl(
 
     getAllSubscriptionsFlowUseCase: GetAllSubscriptionsFlowUseCase
 
-) : ViewModel() {
+) : SubscriptionsViewModel() {
 
-    val subscriptionsLiveData: LiveData<List<Subscription>> =
+    override val subscriptionsLiveData: LiveData<List<Subscription>> =
         getAllSubscriptionsFlowUseCase().asLiveData()
 }

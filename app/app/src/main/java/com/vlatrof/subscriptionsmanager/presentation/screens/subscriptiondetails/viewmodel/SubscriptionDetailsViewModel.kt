@@ -1,8 +1,8 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails
+package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.viewmodel
 
 import androidx.lifecycle.LiveData
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
-import com.vlatrof.subscriptionsmanager.presentation.screens.base.BaseViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.common.BaseViewModel
 
 abstract class SubscriptionDetailsViewModel : BaseViewModel() {
 
@@ -24,9 +24,9 @@ abstract class SubscriptionDetailsViewModel : BaseViewModel() {
 
     abstract var currencyInputValue: String
 
-    abstract var renewalPeriodValue: String
+    abstract var renewalPeriodInputValue: String
 
-    abstract var alertInputValue: String
+    abstract var alertPeriodInputValue: String
 
     abstract fun loadSubscriptionById(id: Int)
 
@@ -44,5 +44,5 @@ abstract class SubscriptionDetailsViewModel : BaseViewModel() {
 
     abstract fun handleNewRenewalPeriodValue(newValue: String)
     
-    abstract fun handleNewAlertValue(newValue: String)
+    abstract fun handleNewAlertPeriodValue(newValue: String)
 }

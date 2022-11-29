@@ -14,7 +14,9 @@ import com.vlatrof.subscriptionsmanager.R
 import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.databinding.FragmentSubscriptionDetailsBinding
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
-import com.vlatrof.subscriptionsmanager.presentation.screens.base.BaseViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.common.BaseViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.viewmodel.SubscriptionDetailsViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.viewmodel.SubscriptionDetailsViewModelFactory
 import com.vlatrof.subscriptionsmanager.utils.AlertPeriodOptions
 import com.vlatrof.subscriptionsmanager.utils.Parser
 import com.vlatrof.subscriptionsmanager.utils.RenewalPeriodOptions
@@ -117,25 +119,29 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
 
     private fun setupNameInput() {
         // handle new value after text changed
-        binding.tietSubscriptionDetailsName.doAfterTextChanged {
-            subscriptionDetailsViewModel.handleNewNameInputValue(it.toString())
+        binding.tietSubscriptionDetailsName.doAfterTextChanged { newValue ->
+            subscriptionDetailsViewModel.handleNewNameInputValue(newValue = newValue.toString())
         }
 
         // handle new state
         subscriptionDetailsViewModel.nameInputState.observe(viewLifecycleOwner) { newState ->
-            binding.tilSubscriptionDetailsName.error = getInputErrorStringByState(newState)
+            binding.tilSubscriptionDetailsName.error = getInputErrorStringByState(
+                newState = newState
+            )
         }
     }
 
     private fun setupCostInput() {
         // handle new value after text changed
-        binding.tietSubscriptionDetailsCost.doAfterTextChanged {
-            subscriptionDetailsViewModel.handleNewCostInputValue(it.toString())
+        binding.tietSubscriptionDetailsCost.doAfterTextChanged { newValue ->
+            subscriptionDetailsViewModel.handleNewCostInputValue(newValue = newValue.toString())
         }
 
         // handle new state
         subscriptionDetailsViewModel.costInputState.observe(viewLifecycleOwner) { newState ->
-            binding.tilSubscriptionDetailsCost.error = getInputErrorStringByState(newState)
+            binding.tilSubscriptionDetailsCost.error = getInputErrorStringByState(
+                newState = newState
+            )
         }
     }
 
@@ -151,7 +157,7 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
             .build()
             .apply {
                 addOnPositiveButtonClickListener { selection ->
-                    subscriptionDetailsViewModel.handleNewStartDateValue(selection)
+                    subscriptionDetailsViewModel.handleNewStartDateValue(newValue = selection)
                 }
             }
 
@@ -164,10 +170,9 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
         }
 
         // handle new date selection
-        subscriptionDetailsViewModel.startDateInputSelectionLiveData.observe(viewLifecycleOwner) { newSelection ->
-
-            val newSelectedDate = Parser.parseLocalDateFromUTCMilliseconds(newSelection)
-
+        subscriptionDetailsViewModel.startDateInputSelectionLiveData.observe(viewLifecycleOwner) {
+                newSelection ->
+            val newSelectedDate = Parser.parseLocalDateFromUTCMilliseconds(millis = newSelection)
             binding.tietSubscriptionDetailsStartDate.setText(
                 newSelectedDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
             )
@@ -183,11 +188,11 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
         }
 
         // handle new state
-        subscriptionDetailsViewModel.buttonSaveState.observe(viewLifecycleOwner) { enabled ->
+        subscriptionDetailsViewModel.buttonSaveState.observe(viewLifecycleOwner) { newState ->
             binding.btnSubscriptionDetailsSave.apply {
-                isEnabled = enabled
+                isEnabled = newState
                 setTextColor(
-                    if (enabled) ResourcesCompat.getColor(resources, R.color.green, null)
+                    if (isEnabled) ResourcesCompat.getColor(resources, R.color.green, null)
                     else ResourcesCompat.getColor(resources, R.color.gray, null)
                 )
             }
@@ -221,22 +226,24 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
         currencyField.setText(subscriptionDetailsViewModel.currencyInputValue, false)
 
         // handle new value
-        currencyField.doAfterTextChanged {
-            var newValue = it.toString()
+        currencyField.doAfterTextChanged { newEditable ->
+            var newValue = newEditable.toString()
 
             // force only capital characters
             if (newValue.isNotEmpty() && newValue != newValue.uppercase()) {
                 newValue = newValue.uppercase()
-                currencyField.setText(newValue)
+                currencyField.setText(newValue, newValue.isNotEmpty())
                 currencyField.setSelection(newValue.length)
             }
 
-            subscriptionDetailsViewModel.handleNewCurrencyValue(newValue)
+            subscriptionDetailsViewModel.handleNewCurrencyValue(newValue = newValue)
         }
 
         // handle new input state
         subscriptionDetailsViewModel.currencyInputState.observe(viewLifecycleOwner) { newState ->
-            binding.tilSubscriptionDetailsCurrency.error = getInputErrorStringByState(newState)
+            binding.tilSubscriptionDetailsCurrency.error = getInputErrorStringByState(
+                newState = newState
+            )
         }
     }
 
@@ -253,12 +260,14 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
         )
 
         // restore value from viewmodel
-        val restoredValue = subscriptionDetailsViewModel.renewalPeriodValue
+        val restoredValue = subscriptionDetailsViewModel.renewalPeriodInputValue
         renewalPeriodField.setText(restoredValue, false)
 
         // handle new value
-        renewalPeriodField.doAfterTextChanged {
-            subscriptionDetailsViewModel.handleNewRenewalPeriodValue(it.toString())
+        renewalPeriodField.doAfterTextChanged { newValue ->
+            subscriptionDetailsViewModel.handleNewRenewalPeriodValue(
+                newValue = newValue.toString()
+            )
         }
     }
 
@@ -275,11 +284,11 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
         )
 
         // restore value from viewmodel
-        alertField.setText(subscriptionDetailsViewModel.alertInputValue, false)
+        alertField.setText(subscriptionDetailsViewModel.alertPeriodInputValue, false)
 
         // handle new value
-        alertField.doAfterTextChanged {
-            subscriptionDetailsViewModel.handleNewAlertValue(it.toString())
+        alertField.doAfterTextChanged { newValue ->
+            subscriptionDetailsViewModel.handleNewAlertPeriodValue(newValue = newValue.toString())
         }
     }
 
@@ -333,7 +342,7 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
             alertPeriodOptions.default
         }
         binding.actvSubscriptionDetailsAlert.setText(alertPeriodStr, false)
-        subscriptionDetailsViewModel.handleNewAlertValue(alertPeriodStr)
+        subscriptionDetailsViewModel.handleNewAlertPeriodValue(alertPeriodStr)
     }
 
     private fun parseSubscription(): Subscription {

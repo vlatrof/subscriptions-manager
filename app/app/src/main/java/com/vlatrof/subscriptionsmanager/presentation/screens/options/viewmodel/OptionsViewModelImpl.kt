@@ -1,8 +1,7 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.options
+package com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel
 
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.data.local.room.database.SubscriptionsRoomDatabase
@@ -18,28 +17,25 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class OptionsViewModel(
+class OptionsViewModelImpl(
 
     private val application: App,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
-) : AndroidViewModel(application) {
+) : OptionsViewModel() {
 
-    fun getCurrentNightMode() = application.getCurrentNightMode()
+    override fun getCurrentNightMode() = application.getCurrentNightMode()
 
-    fun applyNightMode(nightMode: Int) {
-        application.applyNightMode(nightMode)
-    }
+    override fun applyNightMode(mode: Int) = application.applyNightMode(mode)
 
-    fun exportSubscriptions(directoryUri: Uri?) {
+    override fun exportSubscriptions(directoryUri: Uri?) {
         if (directoryUri == null) {
-            // User didn't choose any directory for export
-            return
+            return // User didn't choose any directory for export
         }
         exportOnBackground(directoryUri)
     }
 
-    fun importSubscriptions(contentUri: Uri?) {
+    override fun importSubscriptions(contentUri: Uri?) {
         if (contentUri == null) {
             // User didn't choose any file for import
             return

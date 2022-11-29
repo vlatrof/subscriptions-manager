@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptionslist
+package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions
 
 import android.os.Bundle
 import android.view.View
@@ -9,6 +9,8 @@ import com.vlatrof.subscriptionsmanager.R
 import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.databinding.FragmentSubscriptionsBinding
 import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.SubscriptionDetailsFragment
+import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.viewmodel.SubscriptionsViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.viewmodel.SubscriptionsViewModelFactory
 import javax.inject.Inject
 
 class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
@@ -31,7 +33,7 @@ class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
         observeSubscriptionsLiveData()
         setupOpenOptionsButton()
         setupNewSubscriptionButton()
-        setupNotFoundLayoutNewSubscriptionButton()
+        setupNoSubscriptionsLayout()
     }
 
     private fun injectDependencies() {
@@ -45,10 +47,10 @@ class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
         )[SubscriptionsViewModel::class.java]
     }
 
-    private fun setupNotFoundLayoutNewSubscriptionButton() {
+    private fun setupNoSubscriptionsLayout() {
         binding.btnLlSubscriptionsNotFoundAddNew.setOnClickListener {
             findNavController().navigate(
-                R.id.action_fragment_subscriptions_list_to_fragment_new_subscription
+                R.id.action_fragment_subscriptions_to_fragment_new_subscription
             )
         }
     }
@@ -82,14 +84,14 @@ class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
     private fun setupNewSubscriptionButton() {
         binding.btnSubscriptionsAddNew.setOnClickListener {
             findNavController().navigate(
-                R.id.action_fragment_subscriptions_list_to_fragment_new_subscription
+                R.id.action_fragment_subscriptions_to_fragment_new_subscription
             )
         }
     }
 
     private fun openSubscriptionDetailsScreen(subscriptionId: Int) {
         findNavController().navigate(
-            R.id.action_fragment_subscriptions_list_to_fragment_subscription_details,
+            R.id.action_fragment_subscriptions_to_fragment_subscription_details,
             Bundle().apply {
                 putInt(
                     SubscriptionDetailsFragment.ARGUMENT_SUBSCRIPTION_ID_TAG,
@@ -102,7 +104,7 @@ class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
     private fun setupOpenOptionsButton() {
         binding.btnOpenOptions.setOnClickListener {
             findNavController().navigate(
-                R.id.action_fragment_subscriptions_list_to_fragment_options
+                R.id.action_fragment_subscriptions_to_fragment_options
             )
         }
     }

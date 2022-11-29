@@ -4,28 +4,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragment_subscriptions_list">
+    app:startDestination="@id/fragment_subscriptions">
 
     <fragment
-        android:id="@+id/fragment_subscriptions_list"
-        android:name="com.vlatrof.subscriptionsmanager.presentation.screens.subscriptionslist.SubscriptionsFragment"
+        android:id="@+id/fragment_subscriptions"
+        android:name="com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.SubscriptionsFragment"
         tools:layout="@layout/fragment_subscriptions">
         <action
-            android:id="@+id/action_fragment_subscriptions_list_to_fragment_new_subscription"
+            android:id="@+id/action_fragment_subscriptions_to_fragment_new_subscription"
             app:destination="@id/fragment_new_subscription"
             app:enterAnim="@anim/nav_screen_slide_in_from_right"
             app:exitAnim="@anim/nav_screen_slide_out_to_left"
             app:popEnterAnim="@anim/nav_screen_slide_in_from_left"
             app:popExitAnim="@anim/nav_screen_slide_out_to_right" />
         <action
-            android:id="@+id/action_fragment_subscriptions_list_to_fragment_subscription_details"
+            android:id="@+id/action_fragment_subscriptions_to_fragment_subscription_details"
             app:destination="@id/fragment_subscription_details"
             app:enterAnim="@anim/nav_screen_slide_in_from_right"
             app:exitAnim="@anim/nav_screen_slide_out_to_left"
             app:popEnterAnim="@anim/nav_screen_slide_in_from_left"
             app:popExitAnim="@anim/nav_screen_slide_out_to_right" />
         <action
-            android:id="@+id/action_fragment_subscriptions_list_to_fragment_options"
+            android:id="@+id/action_fragment_subscriptions_to_fragment_options"
             app:destination="@id/optionsFragment"
             app:enterAnim="@anim/nav_screen_slide_in_from_left"
             app:exitAnim="@anim/nav_screen_slide_out_to_right"

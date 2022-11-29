@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptionslist
+package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,7 +11,7 @@ class SubscriptionsViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SubscriptionsViewModel(
+        return SubscriptionsViewModelImpl(
             getAllSubscriptionsFlowUseCase = getAllSubscriptionsFlowUseCase
         ) as T
     }

@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.newsubscription
+package com.vlatrof.subscriptionsmanager.presentation.screens.newsubscription.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +15,7 @@ class NewSubscriptionViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return NewSubscriptionViewModel(
+        return NewSubscriptionViewModelImpl(
             application = application,
             ioDispatcher = ioDispatcher,
             insertNewSubscriptionUseCase = insertNewSubscriptionUseCase

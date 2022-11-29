@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptionslist
+package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions
 
 import android.content.Context
 import android.view.LayoutInflater

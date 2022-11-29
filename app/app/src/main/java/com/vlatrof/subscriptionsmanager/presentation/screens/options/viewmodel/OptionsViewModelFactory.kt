@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.options
+package com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +13,7 @@ class OptionsViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return OptionsViewModel(
+        return OptionsViewModelImpl(
             application = application,
             ioDispatcher = ioDispatcher
         ) as T

@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails
+package com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.viewmodel
 
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
@@ -51,9 +51,9 @@ class SubscriptionDetailsViewModelImpl(
 
     override var currencyInputValue: String = ""
 
-    override var renewalPeriodValue: String = ""
+    override var renewalPeriodInputValue: String = ""
 
-    override var alertInputValue: String = ""
+    override var alertPeriodInputValue: String = ""
 
     private val availableCurrencies = Currency.getAvailableCurrencies()
 
@@ -102,7 +102,7 @@ class SubscriptionDetailsViewModelImpl(
     }
 
     override fun handleNewRenewalPeriodValue(newValue: String) {
-        renewalPeriodValue = newValue
+        renewalPeriodInputValue = newValue
         currentRenewalPeriod = Period.parse(
             RenewalPeriodOptions(resources).options.getFirstKey(newValue)
         )
@@ -112,14 +112,14 @@ class SubscriptionDetailsViewModelImpl(
         nextRenewalTitleLiveData.value = generateNextRenewalTitleStr(newNextRenewalDate)
     }
 
-    override fun handleNewAlertValue(newValue: String) {
-        alertInputValue = newValue
+    override fun handleNewAlertPeriodValue(newValue: String) {
+        alertPeriodInputValue = newValue
     }
 
     private fun validateNameValue(newValue: String): InputState {
-        if (newValue.isEmpty()) return InputState.Empty
-        if (newValue.isBlank()) return InputState.Wrong
-        return InputState.Correct
+        return if (newValue.isEmpty()) InputState.Empty
+        else if (newValue.isBlank()) InputState.Wrong
+        else InputState.Correct
     }
 
     private fun validateCostValue(newValue: String): InputState {
@@ -166,7 +166,6 @@ class SubscriptionDetailsViewModelImpl(
         return nextRenewalDate
     }
 
-    // TODO: тут не должно быть обращения к ресурсам и получения String?!
     private fun generateNextRenewalTitleStr(nextRenewalDate: LocalDate): String {
         val nextRenewalTitle = resources.getString(
             R.string.subscription_details_tv_next_renewal_title

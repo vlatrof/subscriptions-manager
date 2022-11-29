@@ -13,7 +13,9 @@ import com.vlatrof.subscriptionsmanager.R
 import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.databinding.FragmentNewSubscriptionBinding
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
-import com.vlatrof.subscriptionsmanager.presentation.screens.base.BaseViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.common.BaseViewModel
+import com.vlatrof.subscriptionsmanager.presentation.screens.newsubscription.viewmodel.NewSubscriptionViewModelFactory
+import com.vlatrof.subscriptionsmanager.presentation.screens.newsubscription.viewmodel.NewSubscriptionViewModelImpl
 import com.vlatrof.subscriptionsmanager.utils.AlertPeriodOptions
 import com.vlatrof.subscriptionsmanager.utils.Parser
 import com.vlatrof.subscriptionsmanager.utils.RenewalPeriodOptions
@@ -28,7 +30,7 @@ import javax.inject.Inject
 class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
 
     @Inject lateinit var newSubscriptionViewModelFactory: NewSubscriptionViewModelFactory
-    private lateinit var newSubscriptionViewModel: NewSubscriptionViewModel
+    private lateinit var newSubscriptionViewModel: NewSubscriptionViewModelImpl
     private lateinit var binding: FragmentNewSubscriptionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +64,7 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
         newSubscriptionViewModel = ViewModelProvider(
             this,
             newSubscriptionViewModelFactory
-        )[NewSubscriptionViewModel::class.java]
+        )[NewSubscriptionViewModelImpl::class.java]
     }
 
     private fun setupGoBackButton() {
@@ -73,15 +75,18 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
     }
 
     private fun setupNameInput() {
-        // validate new value
-        binding.tietNewSubscriptionName.doAfterTextChanged {
-            newSubscriptionViewModel.validateNameInput(it.toString())
-            newSubscriptionViewModel.updateCreateButtonState()
+        // handle new value after text changed
+        binding.tietNewSubscriptionName.doAfterTextChanged { newValue ->
+            newSubscriptionViewModel.handleNewNameInputValue(
+                newValue = newValue.toString()
+            )
         }
 
         // handle new state
         newSubscriptionViewModel.nameInputState.observe(viewLifecycleOwner) { newState ->
-            binding.tilNewSubscriptionName.error = getInputErrorStringByState(newState)
+            binding.tilNewSubscriptionName.error = getInputErrorStringByState(
+                newState = newState
+            )
         }
     }
 
@@ -89,33 +94,38 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
         // set initial value
         val initialValue = "0.0"
         binding.tietNewSubscriptionCost.setText(initialValue)
-        newSubscriptionViewModel.validateCostInput(initialValue)
+        newSubscriptionViewModel.handleNewCostInputValue(
+            newValue = initialValue
+        )
 
-        // validate new value
-        binding.tietNewSubscriptionCost.doAfterTextChanged {
-            newSubscriptionViewModel.validateCostInput(it.toString())
-            newSubscriptionViewModel.updateCreateButtonState()
+        // handle new value after text changed
+        binding.tietNewSubscriptionCost.doAfterTextChanged { newValue ->
+            newSubscriptionViewModel.handleNewCostInputValue(
+                newValue = newValue.toString()
+            )
         }
 
         // handle new state
         newSubscriptionViewModel.costInputState.observe(viewLifecycleOwner) { newState ->
-            binding.tilNewSubscriptionCost.error = getInputErrorStringByState(newState)
+            binding.tilNewSubscriptionCost.error = getInputErrorStringByState(
+                newState = newState
+            )
         }
     }
 
     private fun setupStartDateInput() {
         val dateField = binding.tietNewSubscriptionStartDate
 
-        // init DatePicker and restore selection
+        // init DatePicker and restore selection from viewmodel
         val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setSelection(newSubscriptionViewModel.startDateInputSelection.value)
+            .setSelection(newSubscriptionViewModel.startDateInputSelectionLiveData.value)
             .setTitleText(
                 getString(R.string.subscription_e_f_til_start_date_date_picker_title_text)
             )
             .build()
             .apply {
-                addOnPositiveButtonClickListener {
-                    newSubscriptionViewModel.startDateInputSelection.value = selection
+                addOnPositiveButtonClickListener { selection ->
+                    newSubscriptionViewModel.handleNewStartDateValue(newValue = selection)
                 }
             }
 
@@ -128,10 +138,11 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
         }
 
         // handle new date selection
-        newSubscriptionViewModel.startDateInputSelection.observe(viewLifecycleOwner) { newSelection ->
+        newSubscriptionViewModel.startDateInputSelectionLiveData.observe(viewLifecycleOwner) {
+                newSelection ->
+            val newSelectedDate = Parser.parseLocalDateFromUTCMilliseconds(millis = newSelection)
             binding.tietNewSubscriptionStartDate.setText(
-                Parser.parseLocalDateFromUTCMilliseconds(newSelection)
-                    .format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+                newSelectedDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
             )
         }
     }
@@ -141,19 +152,16 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
         binding.btnNewSubscriptionCreate.setOnClickListener {
             val subscriptionToCreate = parseSubscription()
             newSubscriptionViewModel.insertNewSubscription(subscriptionToCreate)
-            newSubscriptionViewModel.saveLastCurrencyCode(
-                subscriptionToCreate.paymentCurrency.currencyCode
-            )
             hideKeyboard()
             findNavController().popBackStack()
         }
 
         // handle new state
-        newSubscriptionViewModel.buttonCreateState.observe(viewLifecycleOwner) { enabled ->
+        newSubscriptionViewModel.buttonCreateState.observe(viewLifecycleOwner) { newState ->
             binding.btnNewSubscriptionCreate.apply {
-                isEnabled = enabled
+                isEnabled = newState
                 setTextColor(
-                    if (enabled) ResourcesCompat.getColor(resources, R.color.green, null)
+                    if (isEnabled) ResourcesCompat.getColor(resources, R.color.green, null)
                     else ResourcesCompat.getColor(resources, R.color.gray, null)
                 )
             }
@@ -172,12 +180,7 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
             )
         )
 
-        // if input state initial: restore last value or set default
-        if (newSubscriptionViewModel.currencyInputState.value == BaseViewModel.InputState.Initial) {
-            val defaultCurrencyCode = newSubscriptionViewModel.getLastCurrencyCode()
-            newSubscriptionViewModel.currencyInputValue = defaultCurrencyCode
-            newSubscriptionViewModel.validateCurrencyInput(defaultCurrencyCode)
-        }
+        // restore value from viewmodel
         currencyField.setText(newSubscriptionViewModel.currencyInputValue, false)
 
         // handle new value
@@ -187,68 +190,61 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
             // force only capital characters
             if (newValue.isNotEmpty() && newValue != newValue.uppercase()) {
                 newValue = newValue.uppercase()
-                currencyField.setText(newValue)
+                currencyField.setText(newValue, newValue.isNotEmpty())
                 currencyField.setSelection(newValue.length)
             }
 
-            newSubscriptionViewModel.currencyInputValue = newValue
-            newSubscriptionViewModel.validateCurrencyInput(newValue)
-            newSubscriptionViewModel.updateCreateButtonState()
+            newSubscriptionViewModel.handleNewCurrencyValue(newValue = newValue)
         }
 
         // handle new input state
         newSubscriptionViewModel.currencyInputState.observe(viewLifecycleOwner) { newState ->
-            binding.tilNewSubscriptionCurrency.error = getInputErrorStringByState(newState)
+            binding.tilNewSubscriptionCurrency.error = getInputErrorStringByState(
+                newState = newState
+            )
         }
     }
 
     private fun setupRenewalPeriodInput() {
         val renewalPeriodField = binding.actvNewSubscriptionRenewalPeriod
-        val renewalPeriodOptions = RenewalPeriodOptions(resources)
 
         // set menu items
         renewalPeriodField.setAdapter(
             ArrayAdapter(
                 requireActivity(),
                 android.R.layout.simple_spinner_dropdown_item,
-                renewalPeriodOptions.options.values.toTypedArray()
+                RenewalPeriodOptions(resources).options.values.toTypedArray()
             )
         )
 
-        // restore value or set default
-        if (newSubscriptionViewModel.renewalPeriodInputSelection.isEmpty()) {
-            newSubscriptionViewModel.renewalPeriodInputSelection = renewalPeriodOptions.default
-        }
-        renewalPeriodField.setText(newSubscriptionViewModel.renewalPeriodInputSelection, false)
+        renewalPeriodField.setText(newSubscriptionViewModel.renewalPeriodInputValue, false)
 
         // handle new value
-        renewalPeriodField.doAfterTextChanged {
-            newSubscriptionViewModel.renewalPeriodInputSelection = it.toString()
+        renewalPeriodField.doAfterTextChanged { newValue ->
+            newSubscriptionViewModel.handleNewRenewalPeriodValue(
+                newValue = newValue.toString()
+            )
         }
     }
 
     private fun setupAlertPeriodInput() {
         val alertField = binding.actvNewSubscriptionAlert
-        val optionsHolder = AlertPeriodOptions(resources)
 
         // set menu items
         alertField.setAdapter(
             ArrayAdapter(
                 requireActivity(),
                 android.R.layout.simple_spinner_dropdown_item,
-                optionsHolder.options.values.toTypedArray()
+                AlertPeriodOptions(resources).options.values.toTypedArray()
             )
         )
 
         // restore value or set default
-        if (newSubscriptionViewModel.alertInputSelection == "") {
-            newSubscriptionViewModel.alertInputSelection = optionsHolder.default
-        }
-        alertField.setText(newSubscriptionViewModel.alertInputSelection, false)
+        alertField.setText(newSubscriptionViewModel.alertPeriodInputValue, false)
 
         // handle new value
-        alertField.doAfterTextChanged {
-            newSubscriptionViewModel.alertInputSelection = it.toString()
+        alertField.doAfterTextChanged { newValue ->
+            newSubscriptionViewModel.handleNewAlertPeriodValue(newValue = newValue.toString())
         }
     }
 
@@ -279,7 +275,7 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
 
         // start date
         val startDate = Parser.parseLocalDateFromUTCMilliseconds(
-            newSubscriptionViewModel.startDateInputSelection.value!!
+            newSubscriptionViewModel.startDateInputSelectionLiveData.value!!
         )
 
         // renewal period
