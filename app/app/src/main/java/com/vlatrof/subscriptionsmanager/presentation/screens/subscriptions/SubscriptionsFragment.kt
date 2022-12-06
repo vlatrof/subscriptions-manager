@@ -77,7 +77,7 @@ class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
                 binding.rvSubscriptionsList.visibility = View.VISIBLE
             }
 
-            subscriptionsAdapter.setData(updatedSubscriptionsList)
+            subscriptionsAdapter.items = updatedSubscriptionsList
         }
     }
 

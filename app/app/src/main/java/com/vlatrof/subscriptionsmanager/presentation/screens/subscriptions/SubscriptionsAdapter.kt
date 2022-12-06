@@ -41,21 +41,21 @@ class SubscriptionsAdapter(
     private val listener: SubscriptionsActionListener
 
 ) : RecyclerView.Adapter<SubscriptionsAdapter.SubscriptionViewHolder>() {
+    
+    var items: List<Subscription> = emptyList()
+        set(value) {
+            value.sortedBy { it.nextRenewalDate }.let { newSortedList ->
+                val diff = DiffUtil.calculateDiff(
+                    SubscriptionsDiffUtilCallback(items, newSortedList)
+                )
+                field = newSortedList
+                diff.dispatchUpdatesTo(this@SubscriptionsAdapter)
+            }
+        }
 
-    var subscriptions: List<Subscription> = emptyList()
+    override fun getItemCount(): Int = items.size
 
-    fun setData(newSubscriptionsList: List<Subscription>) {
-        val newSortedList = newSubscriptionsList.sortedBy { it.nextRenewalDate }
-        val subscriptionsDiffUtilCallback =
-            SubscriptionsDiffUtilCallback(subscriptions, newSortedList)
-        val diffResult = DiffUtil.calculateDiff(subscriptionsDiffUtilCallback)
-        subscriptions = newSortedList
-        diffResult.dispatchUpdatesTo(this@SubscriptionsAdapter)
-    }
-
-    override fun getItemCount(): Int = subscriptions.size
-
-    class SubscriptionViewHolder(val binding: RvItemSubscriptionBinding) :
+    inner class SubscriptionViewHolder(val binding: RvItemSubscriptionBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
@@ -73,7 +73,7 @@ class SubscriptionsAdapter(
     }
 
     override fun onBindViewHolder(holder: SubscriptionViewHolder, position: Int) {
-        val subscription = subscriptions[position]
+        val subscription = items[position]
 
         holder.itemView.tag = subscription.id
 
