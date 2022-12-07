@@ -8,6 +8,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.vlatrof.subscriptionsmanager.R
@@ -32,14 +33,10 @@ import javax.inject.Inject
 
 class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_details) {
 
-    companion object {
-        const val ARGUMENT_SUBSCRIPTION_ID_TAG = "ARGUMENT_SUBSCRIPTION_ID"
-        const val ARGUMENT_SUBSCRIPTION_ID_DEFAULT_VALUE = -1
-    }
-
     @Inject lateinit var subscriptionDetailsViewModelFactory: SubscriptionDetailsViewModelFactory
     private lateinit var subscriptionDetailsViewModel: SubscriptionDetailsViewModel
     private lateinit var binding: FragmentSubscriptionDetailsBinding
+    private val args: SubscriptionDetailsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +80,7 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
     }
 
     private fun loadSubscription() {
-        subscriptionDetailsViewModel.loadSubscriptionById(getArgumentSubscriptionId())
+        subscriptionDetailsViewModel.loadSubscriptionById(args.subscriptionId)
     }
 
     private fun observeSubscriptionLiveData() {
@@ -346,7 +343,7 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
     }
 
     private fun parseSubscription(): Subscription {
-        val id = getArgumentSubscriptionId()
+        val id = args.subscriptionId
 
         val name = binding.tietSubscriptionDetailsName.text.toString().trim()
 
@@ -398,21 +395,8 @@ class SubscriptionDetailsFragment : Fragment(R.layout.fragment_subscription_deta
     }
 
     private fun onPositiveActionDialogDelete() {
-        subscriptionDetailsViewModel.deleteSubscriptionById(getArgumentSubscriptionId())
+        subscriptionDetailsViewModel.deleteSubscriptionById(args.subscriptionId)
         hideKeyboard()
         findNavController().popBackStack()
-    }
-
-    private fun getArgumentSubscriptionId(): Int {
-        requireArguments().getInt(
-            ARGUMENT_SUBSCRIPTION_ID_TAG,
-            ARGUMENT_SUBSCRIPTION_ID_DEFAULT_VALUE
-        ).let { id ->
-            if (id == ARGUMENT_SUBSCRIPTION_ID_DEFAULT_VALUE) {
-                showToast(getString(R.string.toast_error_message_something_went_wrong))
-                findNavController().popBackStack()
-            }
-            return id
-        }
     }
 }

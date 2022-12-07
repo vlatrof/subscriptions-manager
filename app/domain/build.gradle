@@ -17,5 +17,4 @@ dependencies {
     // Dagger DI
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-
 }

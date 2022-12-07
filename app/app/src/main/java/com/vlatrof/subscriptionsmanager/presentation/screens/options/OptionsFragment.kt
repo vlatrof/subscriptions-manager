@@ -16,7 +16,6 @@ import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.databinding.FragmentOptionsBinding
 import com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel.OptionsViewModel
 import com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel.OptionsViewModelFactory
-import com.vlatrof.subscriptionsmanager.presentation.screens.options.viewmodel.OptionsViewModelImpl
 import com.vlatrof.subscriptionsmanager.utils.getFirstKey
 import javax.inject.Inject
 

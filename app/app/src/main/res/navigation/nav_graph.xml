@@ -44,8 +44,8 @@
         tools:layout="@layout/fragment_subscription_details">
         <argument
             android:name="subscriptionId"
-            android:defaultValue="-1"
-            app:argType="integer" />
+            app:argType="integer"
+            android:defaultValue="-1"/>
     </fragment>
 
     <fragment

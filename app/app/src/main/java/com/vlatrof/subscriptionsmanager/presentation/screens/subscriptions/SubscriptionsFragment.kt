@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import com.vlatrof.subscriptionsmanager.R
 import com.vlatrof.subscriptionsmanager.app.App
 import com.vlatrof.subscriptionsmanager.databinding.FragmentSubscriptionsBinding
-import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptiondetails.SubscriptionDetailsFragment
 import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.viewmodel.SubscriptionsViewModel
 import com.vlatrof.subscriptionsmanager.presentation.screens.subscriptions.viewmodel.SubscriptionsViewModelFactory
 import javax.inject.Inject
@@ -91,13 +90,10 @@ class SubscriptionsFragment : Fragment(R.layout.fragment_subscriptions) {
 
     private fun openSubscriptionDetailsScreen(subscriptionId: Int) {
         findNavController().navigate(
-            R.id.action_fragment_subscriptions_to_fragment_subscription_details,
-            Bundle().apply {
-                putInt(
-                    SubscriptionDetailsFragment.ARGUMENT_SUBSCRIPTION_ID_TAG,
-                    subscriptionId
+            SubscriptionsFragmentDirections
+                .actionFragmentSubscriptionsToFragmentSubscriptionDetails(
+                    subscriptionId = subscriptionId
                 )
-            }
         )
     }
 

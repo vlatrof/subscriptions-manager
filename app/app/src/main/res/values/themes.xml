@@ -47,14 +47,6 @@
     </style>
 
     <!-- Alert dialog info theme. -->
-    <style name="Alert_dialog_info">
-        <item name="buttonBarPositiveButtonStyle">@style/Alert_info_button_positive</item>
-    </style>
-    <style name="Alert_info_button_positive" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/green</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-    </style>
-
 
 
 </resources>
