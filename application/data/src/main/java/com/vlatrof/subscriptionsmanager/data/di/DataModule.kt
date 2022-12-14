@@ -1,6 +1,7 @@
 package com.vlatrof.subscriptionsmanager.data.di
 
 import android.content.Context
+import com.vlatrof.subscriptionsmanager.data.local.SubscriptionsLocalDataSource
 import com.vlatrof.subscriptionsmanager.data.local.room.SubscriptionsDao
 import com.vlatrof.subscriptionsmanager.data.local.room.SubscriptionsRoomDatabase
 import com.vlatrof.subscriptionsmanager.data.repositories.SubscriptionsRepositoryImpl
@@ -37,6 +38,17 @@ abstract class RepositoriesModule {
     @Binds
     @Singleton
     abstract fun bindSubscriptionsRepository(
-        subscriptionsRepositoryImpl: SubscriptionsRepositoryImpl
+        implementation: SubscriptionsRepositoryImpl
     ): com.vlatrof.subscriptionsmanager.domain.repositories.SubscriptionsRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourcesModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindSubscriptionsLocalDataSource(
+        implementation: SubscriptionsLocalDataSource.Base
+    ): SubscriptionsLocalDataSource
 }

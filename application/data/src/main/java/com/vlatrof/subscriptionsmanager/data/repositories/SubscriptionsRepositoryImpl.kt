@@ -14,7 +14,7 @@ class SubscriptionsRepositoryImpl @Inject constructor(
 
     private val subscriptionsLocalDataSource: SubscriptionsLocalDataSource
 
-) : com.vlatrof.subscriptionsmanager.domain.repositories.SubscriptionsRepository {
+) : SubscriptionsRepository {
 
     override val allSubscriptionsFlow: Flow<List<DomainSubscription>> =
         subscriptionsLocalDataSource.allSubscriptionsFlow.map { dataSubscriptionsList ->
