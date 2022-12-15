@@ -6,23 +6,23 @@ Offline-first Android application for subscription management and notifications
 
 Tools:
 * Kotlin
-* Dagger2
+* Kotlin Coroutines
+* Kotlin Flow
+* DI: Dagger Hilt
 * Room
 * Navigation Component
 * WorkManager
-* Notifications
-* Kotlin Coroutines
-* Kotlin Flow
+* Push Notifications
 * LiveData
 * RecyclerView
 * Shared Preferences
 
-System Design patterns: (app architecture diagram [below](#app-architecture-diagram))
-* MVVM
-* UseCase
-* Repository
-* DataSource
+System Design patterns and principles: (app architecture diagram [below](#app-architecture-diagram))
+* MVVM pattern
 * Clean architecture principles
+* UseCase pattern
+* Repository pattern
+* DataSource pattern
 
 <br />
 
