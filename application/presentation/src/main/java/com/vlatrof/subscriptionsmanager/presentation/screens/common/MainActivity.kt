@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.vlatrof.subscriptionsmanager.R.layout.activity_main
-import com.vlatrof.subscriptionsmanager.presentation.utils.notifications.SubscriptionRenewalAlertsManager
+import com.vlatrof.subscriptionsmanager.presentation.notifications.SubscriptionRenewalAlertsManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

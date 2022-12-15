@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.presentation.utils.notifications
+package com.vlatrof.subscriptionsmanager.presentation.notifications
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
