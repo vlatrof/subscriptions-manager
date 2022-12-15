@@ -39,7 +39,7 @@ abstract class RepositoriesModule {
     @Singleton
     abstract fun bindSubscriptionsRepository(
         implementation: SubscriptionsRepositoryImpl
-    ): com.vlatrof.subscriptionsmanager.domain.repositories.SubscriptionsRepository
+    ): SubscriptionsRepository
 }
 
 @Module

@@ -7,19 +7,19 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-interface GetSubscriptionByIdUseCase {
+interface InsertSubscriptionsListUseCase {
 
-    suspend operator fun invoke(id: Int): Subscription
+    suspend operator fun invoke(subscriptions: List<Subscription>)
 
     class Base @Inject constructor(
 
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val subscriptionsRepository: SubscriptionsRepository
 
-    ) : GetSubscriptionByIdUseCase {
+    ) : InsertSubscriptionsListUseCase {
 
-        override suspend fun invoke(id: Int) = withContext(ioDispatcher) {
-            subscriptionsRepository.getById(id)
+        override suspend fun invoke(subscriptions: List<Subscription>) = withContext(ioDispatcher) {
+            subscriptionsRepository.insertList(subscriptions)
         }
     }
 }

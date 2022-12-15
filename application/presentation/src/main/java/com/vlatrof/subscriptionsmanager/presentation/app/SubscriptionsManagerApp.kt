@@ -1,30 +1,38 @@
-package com.vlatrof.subscriptionsmanager.app
+package com.vlatrof.subscriptionsmanager.presentation.app
 
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
+// Implementing Configuration.Provider interface for WorkManager Injecting with Hilt
 @HiltAndroidApp
-class SubscriptionsManagerApplication : Application() {
+class SubscriptionsManagerApp : Application(), Configuration.Provider {
+
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder().setWorkerFactory(workerFactory).build()
 
     override fun onCreate() {
         super.onCreate()
 
         // apply current night mode on app start
-        AppCompatDelegate.setDefaultNightMode(
+        applyNightMode(
             getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
                 .getInt(NIGHT_MODE, DEFAULT_NIGHT_MODE)
         )
     }
 
     fun applyNightMode(mode: Int) {
-        saveNightMode(mode = mode)
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
-    private fun saveNightMode(mode: Int) {
+    fun saveNightMode(mode: Int) {
         getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
             .edit()
             .putInt(NIGHT_MODE, mode)

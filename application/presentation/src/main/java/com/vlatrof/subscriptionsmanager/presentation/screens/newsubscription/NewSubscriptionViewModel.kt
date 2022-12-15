@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.vlatrof.subscriptionsmanager.app.SubscriptionsManagerApplication
+import com.vlatrof.subscriptionsmanager.presentation.app.SubscriptionsManagerApp
 import com.vlatrof.subscriptionsmanager.domain.di.IoDispatcher
 import com.vlatrof.subscriptionsmanager.domain.usecases.InsertSubscriptionUseCase
 import com.vlatrof.subscriptionsmanager.presentation.screens.common.BaseViewModel
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class NewSubscriptionViewModel @Inject constructor(
 
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val application: SubscriptionsManagerApplication,
+    private val application: SubscriptionsManagerApp,
     private val insertSubscriptionUseCase: InsertSubscriptionUseCase
 
 ) : BaseViewModel() {

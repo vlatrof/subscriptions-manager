@@ -10,10 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.vlatrof.subscriptionsmanager.R
-import com.vlatrof.subscriptionsmanager.app.utils.getFirstKey
-import com.vlatrof.subscriptionsmanager.app.utils.hideKeyboard
-import com.vlatrof.subscriptionsmanager.app.utils.parseLocalDateFromUTCMilliseconds
-import com.vlatrof.subscriptionsmanager.app.utils.round
+import com.vlatrof.subscriptionsmanager.presentation.utils.getFirstKey
+import com.vlatrof.subscriptionsmanager.presentation.utils.hideKeyboard
+import com.vlatrof.subscriptionsmanager.presentation.utils.parseLocalDateFromUTCMilliseconds
+import com.vlatrof.subscriptionsmanager.presentation.utils.round
 import com.vlatrof.subscriptionsmanager.databinding.FragmentNewSubscriptionBinding
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
 import com.vlatrof.subscriptionsmanager.presentation.screens.common.BaseViewModel
@@ -246,7 +246,7 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
         }
     }
 
-    private fun parseSubscription(): com.vlatrof.subscriptionsmanager.domain.models.Subscription {
+    private fun parseSubscription(): Subscription {
         val name = binding.tietNewSubscriptionName.text.toString().trim()
 
         val description = binding.tietNewSubscriptionDescription.text.toString().trim()
@@ -284,7 +284,7 @@ class NewSubscriptionFragment : Fragment(R.layout.fragment_new_subscription) {
             )
         }
 
-        return com.vlatrof.subscriptionsmanager.domain.models.Subscription(
+        return Subscription(
             name = name,
             description = description,
             paymentCost = paymentCost,

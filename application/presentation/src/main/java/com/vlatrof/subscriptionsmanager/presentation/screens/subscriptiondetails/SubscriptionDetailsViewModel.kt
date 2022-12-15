@@ -6,17 +6,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.vlatrof.subscriptionsmanager.R
-import com.vlatrof.subscriptionsmanager.app.SubscriptionsManagerApplication
-import com.vlatrof.subscriptionsmanager.app.utils.getFirstKey
-import com.vlatrof.subscriptionsmanager.app.utils.parseLocalDateFromUTCMilliseconds
 import com.vlatrof.subscriptionsmanager.domain.di.IoDispatcher
 import com.vlatrof.subscriptionsmanager.domain.di.MainDispatcher
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
 import com.vlatrof.subscriptionsmanager.domain.usecases.DeleteSubscriptionByIdUseCase
 import com.vlatrof.subscriptionsmanager.domain.usecases.GetSubscriptionByIdUseCase
 import com.vlatrof.subscriptionsmanager.domain.usecases.UpdateSubscriptionUseCase
+import com.vlatrof.subscriptionsmanager.presentation.app.SubscriptionsManagerApp
 import com.vlatrof.subscriptionsmanager.presentation.screens.common.BaseViewModel
 import com.vlatrof.subscriptionsmanager.presentation.utils.RenewalPeriodOptions
+import com.vlatrof.subscriptionsmanager.presentation.utils.getFirstKey
+import com.vlatrof.subscriptionsmanager.presentation.utils.parseLocalDateFromUTCMilliseconds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.NumberFormatException
 import java.time.LocalDate
@@ -33,7 +33,7 @@ class SubscriptionDetailsViewModel @Inject constructor(
 
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-    private val applicationContext: SubscriptionsManagerApplication,
+    private val applicationContext: SubscriptionsManagerApp,
     private val getSubscriptionByIdUseCase: GetSubscriptionByIdUseCase,
     private val updateSubscriptionUseCase: UpdateSubscriptionUseCase,
     private val deleteSubscriptionByIdUseCase: DeleteSubscriptionByIdUseCase,
@@ -176,12 +176,10 @@ class SubscriptionDetailsViewModel @Inject constructor(
     }
 
     private fun updateSaveButtonState() {
-        val lol = nameInputState.value == InputState.Correct &&
-                costInputState.value == InputState.Correct &&
-                currencyInputState.value == InputState.Correct
-        mutableButtonSaveState.value = lol
-
-        val kek = 3
+        mutableButtonSaveState.value =
+            nameInputState.value == InputState.Correct &&
+            costInputState.value == InputState.Correct &&
+            currencyInputState.value == InputState.Correct
     }
 
     private fun calculateNextRenewalDate(startDate: LocalDate, renewalPeriod: Period): LocalDate {

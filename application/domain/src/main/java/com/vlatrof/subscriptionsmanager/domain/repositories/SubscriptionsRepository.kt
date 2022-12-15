@@ -5,15 +5,19 @@ import kotlinx.coroutines.flow.Flow
 
 interface SubscriptionsRepository {
 
-    val allSubscriptionsFlow: Flow<List<Subscription>>
+    val allFlow: Flow<List<Subscription>>
 
-    suspend fun getSubscriptionById(id: Int): Subscription
+    suspend fun getById(id: Int): Subscription
 
-    suspend fun insertSubscription(subscription: Subscription)
+    suspend fun getAll(): List<Subscription>
 
-    suspend fun deleteAllSubscriptions()
+    suspend fun insert(subscription: Subscription)
 
-    suspend fun deleteSubscriptionById(id: Int)
+    suspend fun insertList(subscriptions: List<Subscription>)
 
-    suspend fun updateSubscription(subscription: Subscription)
+    suspend fun update(subscription: Subscription)
+
+    suspend fun delete(id: Int)
+
+    suspend fun deleteAll()
 }

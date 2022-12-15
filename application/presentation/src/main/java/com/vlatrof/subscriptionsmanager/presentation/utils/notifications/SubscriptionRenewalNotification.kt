@@ -1,4 +1,4 @@
-package com.vlatrof.subscriptionsmanager.app.notification
+package com.vlatrof.subscriptionsmanager.presentation.utils.notifications
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -12,29 +12,43 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.res.ResourcesCompat
 import com.vlatrof.subscriptionsmanager.R
 import com.vlatrof.subscriptionsmanager.domain.models.Subscription
-import com.vlatrof.subscriptionsmanager.presentation.activity.MainActivity
+import com.vlatrof.subscriptionsmanager.presentation.screens.common.MainActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class NotificationHelper(private val context: Context) {
+class SubscriptionRenewalNotification(
+    
+    private val subscription: Subscription,
+    private val context: Context
+    
+) {
 
-    private val channelId = "SUBSCRIPTIONS_RENEWAL_ALERTS"
-    private val channelName = context.resources.getString(
-        R.string.renewal_notification_channel_name
-    )
-
-    fun showRenewalNotification(subscription: com.vlatrof.subscriptionsmanager.domain.models.Subscription) {
-        NotificationManagerCompat.from(context).notify(
-            subscription.id,
-            createRenewalNotification(subscription)
+    fun show() {
+        submitChannel(
+            channelId = channelId,
+            channelName = context.getString(channelNameResourceStringId)
         )
+        val notification = create()
+        NotificationManagerCompat.from(context).notify(subscription.id, notification)
     }
 
-    private fun createRenewalNotification(subscription: com.vlatrof.subscriptionsmanager.domain.models.Subscription): Notification {
-        // title str
+    private fun submitChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                .createNotificationChannel(channel)
+        }
+    }
+
+    private fun create(): Notification {
+        // prepare title 
         val title = context.getString(R.string.renewal_notification_title, subscription.name)
 
-        // message date str
+        // prepare date
         val dateStr = when (subscription.nextRenewalDate) {
             LocalDate.now() -> { context.getString(R.string.today).lowercase() }
             LocalDate.now().plusDays(1) -> { context.getString(R.string.tomorrow).lowercase() }
@@ -52,20 +66,11 @@ class NotificationHelper(private val context: Context) {
             subscription.paymentCurrency.currencyCode
         )
 
-        // submit notification channel if needed by version
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                channelName,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .createNotificationChannel(channel)
-        }
-
         // create pending intent to open app by click on notification
         val intent = Intent(context, MainActivity::class.java)
-            .apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK }
+            .apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getActivity(
                 context,
@@ -88,5 +93,10 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
+    }
+    
+    companion object {
+        private const val channelId = "SUBSCRIPTIONS_RENEWAL_ALERTS"
+        private const val channelNameResourceStringId = R.string.renewal_notification_channel_name
     }
 }

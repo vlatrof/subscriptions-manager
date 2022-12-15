@@ -15,6 +15,6 @@ interface GetAllSubscriptionsFlowUseCase {
 
     ) : GetAllSubscriptionsFlowUseCase {
 
-        override fun invoke() = subscriptionsRepository.allSubscriptionsFlow
+        override fun invoke() = subscriptionsRepository.allFlow
     }
 }

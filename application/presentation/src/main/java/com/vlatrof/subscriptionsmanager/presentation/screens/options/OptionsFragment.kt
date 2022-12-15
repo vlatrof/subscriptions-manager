@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.vlatrof.subscriptionsmanager.R
-import com.vlatrof.subscriptionsmanager.app.utils.getFirstKey
+import com.vlatrof.subscriptionsmanager.presentation.utils.getFirstKey
 import com.vlatrof.subscriptionsmanager.databinding.FragmentOptionsBinding
 import dagger.hilt.android.AndroidEntryPoint
 

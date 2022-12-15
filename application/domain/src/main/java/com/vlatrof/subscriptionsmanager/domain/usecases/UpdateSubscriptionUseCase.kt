@@ -19,7 +19,7 @@ interface UpdateSubscriptionUseCase {
     ) : UpdateSubscriptionUseCase {
 
         override suspend fun invoke(subscription: Subscription) = withContext(ioDispatcher) {
-            subscriptionsRepository.updateSubscription(subscription)
+            subscriptionsRepository.update(subscription)
         }
     }
 }

@@ -1,7 +1,7 @@
-package com.vlatrof.subscriptionsmanager.app.di
+package com.vlatrof.subscriptionsmanager.presentation.app.di
 
 import android.content.Context
-import com.vlatrof.subscriptionsmanager.app.SubscriptionsManagerApplication
+import com.vlatrof.subscriptionsmanager.presentation.app.SubscriptionsManagerApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +17,5 @@ class AppModule {
     @Singleton
     fun provideSubscriptionsManagerApplication(
         @ApplicationContext applicationContext: Context
-    ): SubscriptionsManagerApplication = applicationContext as SubscriptionsManagerApplication
+    ): SubscriptionsManagerApp = applicationContext as SubscriptionsManagerApp
 }

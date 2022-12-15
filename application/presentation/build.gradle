@@ -42,14 +42,13 @@ android {
         jvmTarget = '1.8'
     }
     namespace 'com.vlatrof.subscriptionsmanager'
-
 }
 
 dependencies {
 
     // Modules
-    implementation project(path: ':data')
     implementation project(path: ':domain')
+    implementation project(path: ':data')
 
     // Common dependencies
     implementation "androidx.core:core-ktx:$core_ktx_version"
@@ -75,12 +74,13 @@ dependencies {
 
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "androidx.hilt:hilt-work:$hilt_androidx_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx_version"
 
     // Kotlin Serialization JSON module
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
-    
+
     // Testing
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"

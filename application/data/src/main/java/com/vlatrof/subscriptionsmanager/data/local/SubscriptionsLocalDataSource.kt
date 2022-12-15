@@ -10,17 +10,21 @@ import kotlinx.coroutines.flow.map
 @Singleton
 interface SubscriptionsLocalDataSource {
 
-    val allSubscriptionsFlow: Flow<List<Subscription>>
+    val allFlow: Flow<List<Subscription>>
+    
+    suspend fun getAll(): List<Subscription>
+    
+    suspend fun getById(id: Int): Subscription
 
-    suspend fun getSubscriptionById(id: Int): Subscription
+    suspend fun insert(subscription: Subscription)
+    
+    suspend fun insertList(subscriptions: List<Subscription>)
 
-    suspend fun insertSubscription(subscription: Subscription)
+    suspend fun update(subscription: Subscription)
 
-    suspend fun deleteAllSubscriptions()
+    suspend fun deleteById(id: Int)
 
-    suspend fun deleteSubscriptionById(id: Int)
-
-    suspend fun updateSubscription(subscription: Subscription)
+    suspend fun deleteAll()
 
     class Base @Inject constructor(
 
@@ -28,7 +32,7 @@ interface SubscriptionsLocalDataSource {
 
     ) : SubscriptionsLocalDataSource {
 
-        override val allSubscriptionsFlow: Flow<List<Subscription>> =
+        override val allFlow: Flow<List<Subscription>> =
             subscriptionsDao.getAllFlow().map { subscriptionsEntitiesList ->
                 mutableListOf<Subscription>().apply {
                     subscriptionsEntitiesList.forEach { subscriptionEntity ->
@@ -37,24 +41,29 @@ interface SubscriptionsLocalDataSource {
                 }
             }
 
-        override suspend fun getSubscriptionById(id: Int): Subscription {
-            return Subscription(subscriptionsDao.getById(id))
-        }
+        override suspend fun getById(id: Int): Subscription =
+            Subscription(subscriptionsDao.getById(id))
 
-        override suspend fun insertSubscription(subscription: Subscription) {
+        override suspend fun getAll(): List<Subscription> =
+            subscriptionsDao.getAll().map { entity ->
+                Subscription(entity)
+            }
+
+        override suspend fun insert(subscription: Subscription) =
             subscriptionsDao.insert(subscription.toSubscriptionEntity())
-        }
 
-        override suspend fun deleteAllSubscriptions() {
-            subscriptionsDao.deleteAll()
-        }
+        override suspend fun insertList(subscriptions: List<Subscription>) =
+            subscriptionsDao.insertList(
+                subscriptions.map { dataSubscription ->
+                    dataSubscription.toSubscriptionEntity()
+                }
+            )
 
-        override suspend fun deleteSubscriptionById(id: Int) {
-            subscriptionsDao.deleteById(id)
-        }
+        override suspend fun deleteAll() = subscriptionsDao.deleteAll()
 
-        override suspend fun updateSubscription(subscription: Subscription) {
+        override suspend fun deleteById(id: Int) = subscriptionsDao.deleteById(id)
+
+        override suspend fun update(subscription: Subscription) =
             subscriptionsDao.update(subscription.toSubscriptionEntity())
-        }
     }
 }

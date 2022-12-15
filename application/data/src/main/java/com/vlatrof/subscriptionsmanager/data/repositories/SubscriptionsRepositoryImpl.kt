@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class SubscriptionsRepositoryImpl @Inject constructor(
 
-    private val subscriptionsLocalDataSource: SubscriptionsLocalDataSource
+    private val localDataSource: SubscriptionsLocalDataSource
 
 ) : SubscriptionsRepository {
 
-    override val allSubscriptionsFlow: Flow<List<DomainSubscription>> =
-        subscriptionsLocalDataSource.allSubscriptionsFlow.map { dataSubscriptionsList ->
+    override val allFlow: Flow<List<DomainSubscription>> =
+        localDataSource.allFlow.map { dataSubscriptionsList ->
             mutableListOf<DomainSubscription>().apply {
                 dataSubscriptionsList.forEach { dataSubscription ->
                     this.add(dataSubscription.toDomainSubscription())
@@ -25,19 +25,29 @@ class SubscriptionsRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getSubscriptionById(id: Int): DomainSubscription =
-        subscriptionsLocalDataSource.getSubscriptionById(id).toDomainSubscription()
-    
-    override suspend fun insertSubscription(subscription: DomainSubscription) =
-        subscriptionsLocalDataSource.insertSubscription(DataSubscription(subscription))
-    
-    override suspend fun deleteAllSubscriptions() =
-        subscriptionsLocalDataSource.deleteAllSubscriptions()
-    
-    override suspend fun deleteSubscriptionById(id: Int) =
-        subscriptionsLocalDataSource.deleteSubscriptionById(id)
-        
-    override suspend fun updateSubscription(subscription: DomainSubscription) =
-        subscriptionsLocalDataSource.updateSubscription(DataSubscription(subscription))
+    override suspend fun getById(id: Int): DomainSubscription =
+        localDataSource.getById(id).toDomainSubscription()
+
+    override suspend fun getAll(): List<DomainSubscription> =
+        localDataSource.getAll().map { dataSubscription ->
+            dataSubscription.toDomainSubscription()
+        }
+
+    override suspend fun insert(subscription: DomainSubscription) =
+        localDataSource.insert(DataSubscription(subscription))
+
+    override suspend fun insertList(subscriptions: List<DomainSubscription>) =
+        localDataSource.insertList(
+            subscriptions.map { domainSubscription ->
+                DataSubscription(domainSubscription)
+            }
+        )
+
+    override suspend fun deleteAll() = localDataSource.deleteAll()
+
+    override suspend fun delete(id: Int) = localDataSource.deleteById(id)
+
+    override suspend fun update(subscription: DomainSubscription) =
+        localDataSource.update(DataSubscription(subscription))
 
 }

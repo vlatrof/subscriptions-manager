@@ -18,7 +18,7 @@ interface DeleteSubscriptionByIdUseCase {
     ) : DeleteSubscriptionByIdUseCase {
 
         override suspend fun invoke(id: Int) = withContext(ioDispatcher) {
-            subscriptionsRepository.deleteSubscriptionById(id)
+            subscriptionsRepository.delete(id)
         }
     }
 }
