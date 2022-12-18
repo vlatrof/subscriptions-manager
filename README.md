@@ -1,6 +1,6 @@
 # Subscriptions manager
 
-<img src="screenshots/night_app_icon.png" alt="App icon (night mode)" width="100">
+<img src="screenshots/app_icon.png" alt="App icon" width="100">
 
 Offline-first Android application for subscription management and notifications
 

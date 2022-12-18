@@ -87,7 +87,7 @@ class SubscriptionRenewalNotification(
             .setContentTitle(title)
             .setContentText(message)
             .setTicker(message)
-            .setSmallIcon(R.drawable.ic_notification_small)
+            .setSmallIcon(R.drawable.ic_notification_icon)
             .setColor(ResourcesCompat.getColor(context.resources, R.color.green, null))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
