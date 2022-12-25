@@ -18,36 +18,38 @@ import kotlinx.coroutines.coroutineScope
 class SubscriptionRenewalAlertsManager {
 
     fun launchAlertsWorker(context: Context) {
-        // repeat interval in hours
-        val repeatInterval = 24L
-
         // calculate initial delay in seconds to the next time point at 12.00 PM
         val currentTime = LocalTime.now().toSecondOfDay()
         val alertTime = LocalTime.of(alertTimeHours, alertTimeMinutes).toSecondOfDay()
         val initialDelay = if (currentTime < alertTime) {
             alertTime - currentTime
         } else {
-            86400 - currentTime + alertTime
+            totalOfDaySeconds - currentTime + alertTime
         }
 
         // create work request
         val newWorkRequest = PeriodicWorkRequestBuilder<SubscriptionRenewalAlertsWorker>(
-            repeatInterval = repeatInterval,
-            TimeUnit.HOURS
-        ).setInitialDelay(initialDelay.toLong(), TimeUnit.SECONDS)
-            .build()
+            repeatInterval = repeatIntervalHours,
+            repeatIntervalTimeUnit = TimeUnit.HOURS
+        ).setInitialDelay(
+            initialDelay.toLong(),
+            TimeUnit.SECONDS
+        ).build()
 
         // launch periodic work with replace policy
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "subscriptionAlerts",
-            ExistingPeriodicWorkPolicy.REPLACE,
-            newWorkRequest
-        )
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "subscriptionAlerts",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                newWorkRequest
+            )
     }
 
     companion object {
-        const val alertTimeHours = 12
-        const val alertTimeMinutes = 0
+        private const val alertTimeHours: Int = 12
+        private const val alertTimeMinutes: Int = 0
+        private const val repeatIntervalHours: Long = 24L
+        private const val totalOfDaySeconds: Int = 86400
     }
 }
 
@@ -64,7 +66,9 @@ class SubscriptionRenewalAlertsWorker @AssistedInject constructor(
         coroutineScope {
             val subscriptions = getAllSubscriptionsUseCase()
 
-            if (subscriptions.isEmpty()) return@coroutineScope
+            if (subscriptions.isEmpty()) {
+                return@coroutineScope
+            }
 
             subscriptions.forEach { subscription ->
                 if (!subscription.alertEnabled) {
